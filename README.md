@@ -2,7 +2,7 @@
 A terminal wordle application using Rich
 
 ## Dependencies
- - This is dependent on (Rich)[https://rich.readthedocs.io/en/stable/introduction.html]. Install Rich on your local machine (or virtual environment) using pip.
+ - This is dependent on [Rich](https://rich.readthedocs.io/en/stable/introduction.html). Install Rich on your local machine (or virtual environment) using pip.
 
 ## How To Use
  1. Clone the Repo
