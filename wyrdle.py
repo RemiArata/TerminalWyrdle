@@ -61,26 +61,32 @@ def validate_guess(gs: str) -> bool:
         return False
     return True
 
-def judge(gs: str, sc: str):
-    gs_list, sc_list = list(gs), list(sc)
-    judge_guess = ["", "", "", "", ""]
-    for idx in range(5):
-        if gs[idx] not in sc:
-            judge_guess[idx] = f"[red]{gs[idx]}[/]"
-            gs_list[idx], sc_list[idx] = '.', '.'
-        elif gs[idx] == sc[idx]:
-            judge_guess[idx] = f"[green]{gs[idx]}[/]"
-            gs_list[idx], sc_list[idx] = '.', '.'
-    for idx in range(5):
-        if gs_list[idx] != '.':
-            if gs_list[idx] not in sc_list:
-                judge_guess[idx] = f"[red]{gs[idx]}[/]"
-            else:
-                judge_guess[idx] = f"[yellow]{gs[idx]}[/]"
 
-    return ''.join(judge_guess)
+def judge(guess: str, secret: str) -> str:
+    rtn_lst = ['', '', '', '', '']
+    gsl, scl = list(guess), list(secret)
 
-def display_board(gs_lst: list, alphabet: list):
+    # Get Exact locations
+    for idx in range(5):
+        if guess[idx] == scl[idx]:
+            gsl[idx], scl[idx] = '+', '.'
+            rtn_lst[idx] = f'[green]{guess[idx]}[/]'
+
+    # Get non present
+    for idx in range(5):
+        if gsl[idx] not in scl and gsl[idx] != '+':
+            rtn_lst[idx] = f'[red]{gsl[idx]}[/]'
+    
+    # Get misplaced letters
+    for idx in range(5):
+        if gsl[idx] in scl:
+            rtn_lst[idx] = f'[yellow]{guess[idx]}[/]'
+            scl[scl.index(guess[idx])] = '.'
+            gsl[idx] = '+'
+
+    return ''.join(rtn_lst)
+
+def display_board(gs_lst: list, alphabet: list, secret):
     console.clear()
     console.rule(":rocket: [blue]Wrdle[/] :rocket:")
     for wrd in gs_lst:
@@ -100,7 +106,7 @@ def main():
         guess_lst = ["*****", "*****", "*****", "*****", "*****", "*****"]
         crct = False
         for idx in range(6):
-            display_board(guess_lst, alpha.display())
+            display_board(guess_lst, alpha.display(), secret)
             guess = input("Guess a word[\quit to stop]: ").upper()
             if guess == '\QUIT':
                 sys.exit()
@@ -113,16 +119,18 @@ def main():
             if guess == secret:
                 crct = True
                 break
-            display_board(guess_lst, alpha.display())
+            display_board(guess_lst, alpha.display(), secret)
+        
+        console.rule(secret)
 
         if crct:
-            display_board(guess_lst, alpha.display())
+            display_board(guess_lst, alpha.display(), secret)
             console.rule(":star: [yellow]YOU WON[/] :star:")
         elif guess == "\QUIT":
-            display_board(guess_lst, alpha.display())
+            display_board(guess_lst, alpha.display(), secret)
             console.rule("Game Stopped")
         else:
-            display_board(guess_lst, alpha.display())
+            display_board(guess_lst, alpha.display(), secret)
             console.rule(f"[red]YOU LOST. The word was: {secret}.[/]")
         
         cont = input("Keep playing[y/N]: ")
