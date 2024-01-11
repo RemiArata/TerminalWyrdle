@@ -6,16 +6,22 @@ import sys
 
 console = Console(width=60)
 
-READ_WORDS = read_csv('frequent_5_char_words.csv')
-WORD_LIST = [wrd.upper() for wrd in list(READ_WORDS.iloc[:, 1])]
+string = ''
+
+
+
+with open("words.txt", "r") as words:
+    wrds = words.readline()
+    wrds.strip()
+    WORD_LIST = wrds.split(',')
 
 class Alphabet:
     def __init__(self) -> None: 
         self.correct: list = []
         self.misplaced: list = []
         self.wrong: list = []
-        self.alphabet: list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
-                               'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        self.alphabet: list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 
+                               'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     
     def add_letters(self, gs: str, sc: str) -> None:
         for idx in range(5):
@@ -32,7 +38,7 @@ class Alphabet:
 
     def display(self) -> list:
         rtn_lst = []
-        for ltr in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+        for ltr in 'abcdefghijklmnopqrstuvwxyz':
             if ltr in self.wrong:
                 rtn_lst.append(f"[red]{ltr}[/]")
             elif ltr in self.misplaced:
@@ -47,7 +53,7 @@ def get_word() -> str:
     return choice(WORD_LIST)
 
 def validate_guess(gs: str) -> bool:
-    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    alpha = 'abcdefghijklmnopqrstuvwxyz'
     if len(gs) != 5:
         print("Guesses must be exactly 5 letters long")
         return False
@@ -89,10 +95,10 @@ def judge(guess: str, secret: str) -> str:
 def display_board(gs_lst: list, alphabet: list, secret):
     console.clear()
     console.rule(":rocket: [blue]Wrdle[/] :rocket:")
+    console.rule(secret)
     for wrd in gs_lst:
         console.rule(wrd)
     console.rule(''.join(alphabet))
-    
 
 def validate_input(inp: str):
     if inp == 'y' or inp == 'N':
@@ -107,12 +113,12 @@ def main():
         crct = False
         for idx in range(6):
             display_board(guess_lst, alpha.display(), secret)
-            guess = input("Guess a word[\quit to stop]: ").upper()
-            if guess == '\QUIT':
+            guess = input("Guess a word[\quit to stop]: ").lower()
+            if guess == '\quit':
                 sys.exit()
             while not validate_guess(guess):
-                guess = input("Guess a word[\quit to stop]: ").upper()
-                if guess =='\QUIT':
+                guess = input("Guess a word[\quit to stop]: ").lower()
+                if guess =='\quit':
                     sys.exit()
             guess_lst[idx] = judge(guess, secret)
             alpha.add_letters(guess, secret)
