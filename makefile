@@ -1,8 +1,10 @@
-run:
-	python ./wyrdle.py
+clean:
+	rm -rf venv
 
-setup: requirements.txt
+venv/bin/activate: requirements.txt
+	python -m venv venv
 	pip install -r requirements.txt
 
-clean:
-    rm -rf __pycache__
+run: venv/bin/activate
+	clear
+	python wyrdle.py
